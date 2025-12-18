@@ -1,0 +1,58 @@
+import java.util.ArrayList;
+
+public class Course implements IEnrollable {
+    private String courseId;
+    private String courseTitle;
+    private double credit;
+    private ArrayList<Student> studentList = new ArrayList<>();
+    private Faculty faculty;
+
+    public Course(String courseId, String courseTitle, double credit) {
+        this.courseId = courseId;
+        this.courseTitle = courseTitle;
+        this.credit = credit;
+    }
+
+    public String getCourseId() { return courseId; }
+    public String getCourseTitle() { return courseTitle; }
+    public ArrayList<Student> getStudentList() { return studentList; }
+    public Faculty getFaculty() { return faculty; }
+
+    @Override
+    public void addStudent(Student student) {
+        studentList.add(student);
+    }
+
+    @Override
+    public void dropStudent(int studentId) {
+        for (int i = 0; i < studentList.size(); i++) {
+            if (studentList.get(i).getStudentId() == studentId) {
+                studentList.remove(i);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void addFaculty(Faculty faculty) {
+        this.faculty = faculty;
+    }
+
+    @Override
+    public void dropFaculty() {
+        this.faculty = null;
+    }
+
+    @Override
+    public void printStudentList() {
+        System.out.println("Student List for " + courseTitle + ":");
+        for (Student s : studentList) {
+            System.out.println(s);
+        }
+    }
+
+    public void printCourseInformation() {
+        System.out.println("Course ID: " + courseId + ", Title: " + courseTitle);
+        System.out.println("Faculty: " + (faculty != null ? faculty.getFacultyName() : "No faculty assigned"));
+    }
+}
