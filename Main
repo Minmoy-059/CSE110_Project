@@ -1,0 +1,163 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        ArrayList<Course> allCourses = new ArrayList<>();
+        ArrayList<Student> allStudents = new ArrayList<>();
+        ArrayList<Faculty> allFaculties = new ArrayList<>();
+
+        String RESET = "\u001B[0m";
+        String RED = "\u001B[31m";
+        String GREEN = "\u001B[32m";
+        String PURPLE = "\u001B[35m";
+
+        System.out.println("=================================");
+        System.out.println(GREEN + "      East West University" + RESET);
+        System.out.println("=================================");
+       
+        boolean isLoggedIn = false;
+        for (int i = 0; i < 3; i++) {
+            System.out.print("Enter Username: ");
+            String username = sc.next();
+            System.out.print("Enter Password: ");
+            String password = sc.next();
+
+            if (username.equals("admin") && password.equals("1234")) {
+                System.out.println(PURPLE + "✅ Login Successful!" + RESET);
+                isLoggedIn = true;
+                break;
+            } else {
+                System.out.println(RED + "❌ Login Failed! Attempts left: " + (2 - i) + RESET);
+            }
+        }
+
+        if (!isLoggedIn) return;
+       
+        while (true) {
+            System.out.println("1: Enter to option Add");
+            System.out.println("2: Enter to option Remove");
+            System.out.println("3: Enter to option Updated");
+            System.out.println("4: Enter to option Enroll/Assign");
+            System.out.println("5: Enter to option View all");
+            System.out.println("6: Enter to option Search");
+            System.out.println("7: Enter to option Exit");
+            System.out.print("Choose option: ");
+            int option = sc.nextInt();
+
+            if (option == 7) {
+                System.out.println("Exiting System...");
+                break;
+            }
+
+            if (option == 1) {
+                System.out.print("a. Course | b. Faculty | c. Student: ");
+                char sub = sc.next().charAt(0);
+                if (sub == 'a') {
+                    System.out.print("ID: "); 
+                    String id = sc.next();
+                    System.out.print("Title: "); 
+                    String title = sc.next();
+                    System.out.print("Credit: ");
+                    double credit = sc.nextDouble();
+                    allCourses.add(new Course(id, title, credit));
+                    System.out.println("✅ Course Added.");
+                } else if (sub == 'b') {
+                    System.out.print("Enter Faculty ID: "); int fid = sc.nextInt();
+                    System.out.print("Enter Name: "); String n = sc.next();
+                    System.out.print("Enter Position: "); String p = sc.next();
+                    allFaculties.add(new Faculty(fid, n, p));
+                    System.out.println("✅ Faculty Added.");
+                } else if (sub == 'c') {
+                    System.out.print("ID: "); int sid = sc.nextInt();
+                    System.out.print("Name: "); String sn = sc.next();
+                    System.out.print("CGPA: "); double g = sc.nextDouble();
+                    allStudents.add(new Student(sid, sn, g));
+                    System.out.println("✅ Student Added.");
+                }
+            }
+
+            else if (option == 4) {
+                System.out.println("1. Assign Faculty | 2. Enroll Student");
+                System.out.print("Choice: ");
+                int choice = sc.nextInt();
+                System.out.print("Enter Course ID: ");
+                String cid = sc.next();
+                
+                Course foundC = null;
+                for (Course c : allCourses) {
+                    if (c.getCourseId().equalsIgnoreCase(cid)) { foundC = c; break; }
+                }
+
+                if (foundC != null) {
+                    if (choice == 1) {
+                        System.out.print("Enter Faculty ID: ");
+                        int fid = sc.nextInt();
+                        boolean fFound = false;
+                        for (Faculty f : allFaculties) {
+                            if (f.getFacultyId() == fid) {
+                                foundC.addFaculty(f); 
+                                System.out.println("✅ Faculty Assigned Successfully!");
+                                fFound = true;
+                                break;
+                            }
+                        }
+                        if(!fFound) System.out.println("❌ Faculty ID not found!");
+                    } else if (choice == 2) { 
+                        System.out.print("Enter Student ID: ");
+                        int sid = sc.nextInt();
+                        boolean sFound = false;
+                        for (Student s : allStudents) {
+                            if (s.getStudentId() == sid) {
+                                foundC.addStudent(s);
+                                System.out.println("✅ Student Enrolled!");
+                                sFound = true;
+                                break;
+                            }
+                        }
+                        if(!sFound) System.out.println("❌ Student ID not found!");
+                    }
+                } else {
+                    System.out.println("❌ Course not found!");
+                }
+            }
+            
+            else if (option == 5) {
+                if (allCourses.isEmpty()) {
+                    System.out.println("No data available. Add courses first.");
+                } else {
+                    for (Course c : allCourses) {
+                        c.printCourseInformation();
+                        c.printStudentList();
+                        System.out.println("-------------------------");
+                    }
+                }
+            }
+            
+            else if (option == 6) {
+                System.out.print("Enter ID to Search: ");
+                String key = sc.next();
+                boolean found = false;
+                
+                for (Student st : allStudents) {
+                    if (String.valueOf(st.getStudentId()).equals(key)) {
+                        System.out.println("✅ Student Found: " + st); found = true;
+                    }
+                }
+                for (Faculty fa : allFaculties) {
+                    if (String.valueOf(fa.getFacultyId()).equals(key)) {
+                        System.out.println("✅ Faculty Found: " + fa); found = true;
+                    }
+                }
+                for (Course co : allCourses) {
+                    if (co.getCourseId().equalsIgnoreCase(key)) {
+                        co.printCourseInformation(); found = true;
+                    }
+                }
+                if (!found) System.out.println("❌ ID not found in system.");
+            }
+        }
+    }
+}
