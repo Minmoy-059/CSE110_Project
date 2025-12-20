@@ -1,58 +1,172 @@
+package UniversityApp;
+
 import java.util.ArrayList;
 
 public class Course implements IEnrollable {
-    private String courseId;
-    private String courseTitle;
-    private double credit;
-    private ArrayList<Student> studentList = new ArrayList<>();
-    private Faculty faculty;
+	
+  private String courseId;
+	 private String courseTitle;
+	 private double credit;
+	 private ArrayList<Student> studentList;
+  private int numberOfStudents;
+  private Faculty faculty;
+  
+  public Course () {
+      this.studentList = new ArrayList<>();
+      this.numberOfStudents = 0;
+      this.faculty = null;
+  }
+  
+  public Course(String courseId, String courseTitle, double credit) {
+ 	 this.courseId = courseId;
+ 	 this.courseTitle = courseTitle;
+ 	 this.credit = credit;
+ 	 this.studentList = new ArrayList<>();
+      this.numberOfStudents = 0;
+      this.faculty = null; 
+  }
+  
+  public Course(String courseId, String courseTitle, double credit,Faculty faculty) {
+ 	 this.courseId = courseId;
+ 	 this.courseTitle = courseTitle;
+ 	 this.credit = credit;
+ 	 this.studentList = new ArrayList<>();
+      this.numberOfStudents = 0;
+      this.faculty =faculty;
+  }
+  
+  public ArrayList<Student> getStudentList() {
+      return studentList;
+  }
 
-    public Course(String courseId, String courseTitle, double credit) {
-        this.courseId = courseId;
-        this.courseTitle = courseTitle;
-        this.credit = credit;
-    }
+   @Override
+   public void addStudent(Student student) { 
+  	 for (Student s : studentList) {
+  		 if (s.getStudentId() == student.getStudentId()) {
+  			 System.out.println("Error: Student already enrolled: " + student.getStudentId());
+  			 return;
+  		 }
+  	 }
+       
+  	 studentList.add(student);
+  	 numberOfStudents++;
+  	 System.out.println("Student enrolled successfully: " + student.getStudentName() + " (" + student.getStudentId() + ")");
+   }   
+   @Override
+   public void dropStudent(int studentId) { 
+  	 Student toRemove = null;
 
-    public String getCourseId() { return courseId; }
-    public String getCourseTitle() { return courseTitle; }
-    public ArrayList<Student> getStudentList() { return studentList; }
-    public Faculty getFaculty() { return faculty; }
+  	 for (Student s : studentList) {
+  		 if (s.getStudentId() == studentId) {
+  			 toRemove = s;
+  			 break;
+  		 }
+  	 }
+  	 
+  	 if (toRemove != null) {
+  		 studentList.remove(toRemove);
+  		 numberOfStudents--;
+          System.out.println("Student dropped: " + toRemove.getStudentName() + " (" + studentId + ")");
+  	 } else {
+  		 System.out.println("Error: Student with ID " + studentId + " not found in the course.");
+  	 }
+   }
+  
+  @Override
+  public void addFaculty(Faculty faculty) {
+ 	 if (this.faculty != null) {
+          System.out.println("Warning: Faculty " + this.faculty.getFacultyName() + " is being replaced by " + faculty.getFacultyName());
+ 	 }
+ 	 this.faculty = faculty;
+ 	 System.out.println("Faculty " + faculty.getFacultyName() + " successfully assigned to " + this.courseTitle);
+  }
+  
+  @Override
+  public void dropFaculty(String facultyIdentifier) {
+      if (this.faculty != null) {
+    	  
+          boolean matched = false;
+          try {
+              int id = Integer.parseInt(facultyIdentifier);
+              if (this.faculty.getFacultyId() == id) {
+                  matched = true;
+              }
+          } catch (NumberFormatException e) {
+              if (this.faculty.getFacultyName().equalsIgnoreCase(facultyIdentifier)) {
+                  matched = true;
+              }
+          }
+          
+          if (matched) {
+              System.out.println("Faculty " + this.faculty.getFacultyName() + " unassigned from " + this.courseTitle);
+              this.faculty = null;
+          } else {
+              System.out.println("Error: Faculty ID/Name '" + facultyIdentifier + "' does not match the currently assigned faculty.");
+          }
+      } else {
+          System.out.println("No faculty is currently assigned to this course.");
+      }
+  }
+  
+  @Override
+  public void printStudentList() {
+ 	 System.out.println("--- Student List for " + this.courseTitle + " (" + this.courseId + ") ---");
+ 	 if (studentList.isEmpty()) {
+ 		 System.out.println("No students currently enrolled.");
+ 	 } else {
+     	 for (Student s : studentList) {
+     		 this.studentList.remove(s);
+     		 //System.out.println("- " + s.toString()); 
+     	 }
+ 	 }
+ 	 System.out.println("Total Enrolled: " + numberOfStudents);
+  }
+  
+  public void printCourseInformation() {
+ 	 System.out.println("\n================ Course Details ================");
+      System.out.println("Course ID: " + this.courseId);
+      System.out.println("Title: " + this.courseTitle);
+      System.out.println("Credit: " + this.credit);
+      
+      System.out.print("Faculty: ");
+      if(this.faculty != null) {
+ 		 System.out.println(this.faculty.toString());
+ 	 } else {
+ 		 System.out.println("No Faculty Assigned.");
+ 	 }
+      printStudentList();
+      System.out.println("================================================");
+  }
+  
+  @Override
+  public String toString() {
+ 	 return "ID: " + this.courseId + ", Title: " + this.courseTitle + ", Credit: " + this.credit;		 
+  }
+ 
+  public void setCourseTitle(String courseTitle) {
+		 this.courseTitle = courseTitle;
+	 }
 
-    @Override
-    public void addStudent(Student student) {
-        studentList.add(student);
-    }
+	 public void setFaculty(Faculty faculty) {
+		 this.faculty = faculty;
+	 }
+	 public double getCredit() {
+			return credit;
+	 }
 
-    @Override
-    public void dropStudent(int studentId) {
-        for (int i = 0; i < studentList.size(); i++) {
-            if (studentList.get(i).getStudentId() == studentId) {
-                studentList.remove(i);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public void addFaculty(Faculty faculty) {
-        this.faculty = faculty;
-    }
-
-    @Override
-    public void dropFaculty() {
-        this.faculty = null;
-    }
-
-    @Override
-    public void printStudentList() {
-        System.out.println("Student List for " + courseTitle + ":");
-        for (Student s : studentList) {
-            System.out.println(s);
-        }
-    }
-
-    public void printCourseInformation() {
-        System.out.println("Course ID: " + courseId + ", Title: " + courseTitle);
-        System.out.println("Faculty: " + (faculty != null ? faculty.getFacultyName() : "No faculty assigned"));
-    }
+  public void setCredit(double credit) {
+			 this.credit = credit;
+	 }
+  public String getCourseId() {
+		return courseId;
+	}
+  public void setCourseId(String courseId) {
+		this.courseId = courseId;
+	}
+	public String getCourseTitle() {
+		return courseTitle;
+	}
+	public Faculty getFaculty() {
+		return faculty;
+	}
 }
