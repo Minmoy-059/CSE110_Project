@@ -1,3 +1,5 @@
+package UniversityProtal;
+
 public class Faculty {
     private int facultyId;
     private String facultyName;
@@ -11,6 +13,8 @@ public class Faculty {
 
     public int getFacultyId() { return facultyId; }
     public String getFacultyName() { return facultyName; }
+    public void setFacultyName(String name) { this.facultyName = name; }
+    public void setFacultyPosition(String pos) { this.facultyPosition = pos; }
 
     @Override
     public String toString() {
