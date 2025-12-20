@@ -1,3 +1,5 @@
+package UniversityProtal;
+
 public class Student {
     private int studentId;
     private String studentName;
@@ -11,6 +13,9 @@ public class Student {
 
     public int getStudentId() { return studentId; }
     public String getStudentName() { return studentName; }
+    public double getStudentCGPA() { return studentCGPA; }
+    public void setStudentName(String name) { this.studentName = name; }
+    public void setStudentCGPA(double cgpa) { this.studentCGPA = cgpa; }
 
     @Override
     public String toString() {
