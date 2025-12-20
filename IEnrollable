@@ -1,7 +1,11 @@
+package UniversityProtal;
+
 public interface IEnrollable {
+	
     public void addStudent(Student student);
     public void dropStudent(int studentId);
     public void addFaculty(Faculty faculty);
     public void dropFaculty();
     public void printStudentList();
+    
 }
