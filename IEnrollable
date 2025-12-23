@@ -1,6 +1,6 @@
 package UniversityProtal;
 
-public interface IEnrollable {
+public interface IEnrollable{
 	
     public void addStudent(Student student);
     public void dropStudent(int studentId);
